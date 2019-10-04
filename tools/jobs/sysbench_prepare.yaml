@@ -1,0 +1,26 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: sysbench-prepare
+spec:
+  template:
+    metadata:
+      name: sysbench-prepare
+    spec:
+      containers:
+      - name: sysbench
+        image: severalnines/sysbench
+        command:
+        - sysbench
+        - --db-driver=mysql
+        - --table-size=100000
+        - --tables=24
+        - --threads=1
+        - --db-ps-mode=disable
+        - --mysql-host=proxysql
+        - --mysql-port=6033
+        - --mysql-user=root
+        - --mysql-password=password
+        - /usr/share/sysbench/oltp_read_write.lua
+        - prepare
+      restartPolicy: Never

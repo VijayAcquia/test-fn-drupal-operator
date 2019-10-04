@@ -1,0 +1,231 @@
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  name: drupalenvironments.fnresources.acquia.io
+spec:
+  group: fnresources.acquia.io
+  names:
+    kind: DrupalEnvironment
+    listKind: DrupalEnvironmentList
+    plural: drupalenvironments
+    shortNames:
+    - drenv
+    - drenvs
+    singular: drupalenvironment
+  scope: Namespaced
+  validation:
+    openAPIV3Schema:
+      properties:
+        apiVersion:
+          description: 'APIVersion defines the versioned schema of this representation
+            of an object. Servers should convert recognized schemas to the latest
+            internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#resources'
+          type: string
+        kind:
+          description: 'Kind is a string value representing the REST resource this
+            object represents. Servers may infer this from the endpoint the client
+            submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#types-kinds'
+          type: string
+        metadata:
+          type: object
+        spec:
+          properties:
+            apache:
+              properties:
+                cpu:
+                  properties:
+                    limit:
+                      type: string
+                    request:
+                      type: string
+                  required:
+                  - request
+                  - limit
+                  type: object
+                memory:
+                  properties:
+                    limit:
+                      type: string
+                    request:
+                      type: string
+                  required:
+                  - request
+                  - limit
+                  type: object
+                tag:
+                  type: string
+                webRoot:
+                  type: string
+              required:
+              - tag
+              - webRoot
+              - cpu
+              - memory
+              type: object
+            application:
+              type: string
+            drupal:
+              properties:
+                livenessProbe:
+                  properties:
+                    enabled:
+                      type: boolean
+                    failureThreshold:
+                      format: int32
+                      type: integer
+                    httpPath:
+                      type: string
+                    periodSeconds:
+                      format: int32
+                      type: integer
+                    successThreshold:
+                      format: int32
+                      type: integer
+                    timeoutSeconds:
+                      format: int32
+                      type: integer
+                  required:
+                  - enabled
+                  - httpPath
+                  - timeoutSeconds
+                  - failureThreshold
+                  - successThreshold
+                  - periodSeconds
+                  type: object
+                maxReplicas:
+                  format: int32
+                  type: integer
+                minReplicas:
+                  format: int32
+                  type: integer
+                pullPolicy:
+                  type: string
+                readinessProbe:
+                  properties:
+                    enabled:
+                      type: boolean
+                    failureThreshold:
+                      format: int32
+                      type: integer
+                    httpPath:
+                      type: string
+                    periodSeconds:
+                      format: int32
+                      type: integer
+                    successThreshold:
+                      format: int32
+                      type: integer
+                    timeoutSeconds:
+                      format: int32
+                      type: integer
+                  required:
+                  - enabled
+                  - httpPath
+                  - timeoutSeconds
+                  - failureThreshold
+                  - successThreshold
+                  - periodSeconds
+                  type: object
+                tag:
+                  type: string
+                targetCPUUtilizationPercentage:
+                  format: int32
+                  type: integer
+              required:
+              - tag
+              - pullPolicy
+              - minReplicas
+              - maxReplicas
+              - livenessProbe
+              - readinessProbe
+              type: object
+            efsid:
+              type: string
+            gitRef:
+              type: string
+            phpfpm:
+              properties:
+                apcMemoryLimitMiB:
+                  format: int32
+                  type: integer
+                cpu:
+                  properties:
+                    limit:
+                      type: string
+                    request:
+                      type: string
+                  required:
+                  - request
+                  - limit
+                  type: object
+                opcacheMemoryLimitMiB:
+                  format: int32
+                  type: integer
+                procMemoryLimitMiB:
+                  format: int32
+                  type: integer
+                procs:
+                  format: int32
+                  type: integer
+                tag:
+                  type: string
+              required:
+              - tag
+              - procs
+              - procMemoryLimitMiB
+              - opcacheMemoryLimitMiB
+              - apcMemoryLimitMiB
+              - cpu
+              type: object
+            production:
+              type: boolean
+            proxySQL:
+              properties:
+                cpu:
+                  properties:
+                    limit:
+                      type: string
+                    request:
+                      type: string
+                  required:
+                  - request
+                  - limit
+                  type: object
+                memory:
+                  properties:
+                    limit:
+                      type: string
+                    request:
+                      type: string
+                  required:
+                  - request
+                  - limit
+                  type: object
+                replicas:
+                  format: int32
+                  type: integer
+                tag:
+                  type: string
+              required:
+              - replicas
+              - cpu
+              - memory
+              - tag
+              type: object
+          required:
+          - application
+          - production
+          - efsid
+          - gitRef
+          - drupal
+          - apache
+          - phpfpm
+          - proxySQL
+          type: object
+        status:
+          type: object
+  version: v1alpha1
+  versions:
+  - name: v1alpha1
+    served: true
+    storage: true

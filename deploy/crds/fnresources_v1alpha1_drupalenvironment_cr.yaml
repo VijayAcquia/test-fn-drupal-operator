@@ -1,0 +1,73 @@
+apiVersion: fnresources.acquia.io/v1alpha1
+kind: DrupalEnvironment
+metadata:
+  name: wlgore-wil-prod
+spec:
+  application: 'wlgore-app'
+  production: true
+  efsid: fs-ba53ad58
+  gitRef: refs/heads/master
+
+  proxySQL:
+    replicas: 1
+    tag: 2.0.5
+    memory:
+      request: 128Mi
+      limit: 512Mi
+    cpu:
+      request: 300m
+      limit: 2000m
+
+  drupal:
+    tag: wlgore-chris
+    pullPolicy: Always
+    minReplicas: 2
+    maxReplicas: 10
+    targetCPUUtilizationPercentage: 50
+
+    #mountPath: /var/www/html/docroot/sites/default/files # This is site-specific, not environment-specific
+    livenessProbe:
+      enabled: true
+      httpPath: /user/login
+      timeoutSeconds: 5
+      failureThreshold: 5
+      periodSeconds: 10
+      successThreshold: 1
+    readinessProbe:
+      enabled: true
+      httpPath: /user/login
+      timeoutSeconds: 5
+      periodSeconds: 10
+      successThreshold: 1
+      failureThreshold: 5
+
+  apache:
+    tag: latest
+    webRoot: docroot  # The path relative to the codebase root that should be interpretted as "/" by Apache
+    cpu:
+      request: 300m
+      limit: 2000m
+    memory:
+      request: 128Mi
+      limit: 256Mi
+
+  phpfpm:
+    tag: '7.3'
+    procs: 4
+    # Memory request and limit will be calculated by the controller based on procs and memory limits
+    procMemoryLimitMiB: 128
+    opcacheMemoryLimitMiB: 96
+    apcMemoryLimitMiB: 32
+    cpu:
+      request: 500m
+      limit: 2000m
+
+  # support:
+  #   enabled: true
+  #   resources:
+  #     requests:
+  #       memory: 64Mi
+  #       cpu: 64m
+  #     limits:
+  #       cpu: 2000m
+  #       memory: 256Mi

@@ -1,0 +1,7 @@
+apiVersion: fnresources.acquia.io/v1alpha1
+kind: DrupalApplication
+metadata:
+  name: wlgore-app
+spec:
+  imageRepo: 881217801864.dkr.ecr.us-east-1.amazonaws.com/kpoc/default
+  gitRepo: gitlab.fn.acquia.io/wl-gore/poc-gore.git

@@ -1,0 +1,7 @@
+image:
+  repository: 881217801864.dkr.ecr.us-east-1.amazonaws.com/fn-drupal-operator
+  tag: latest
+  pullPolicy: Always
+
+watchNamespace: ""
+useDynamicProvisioning: ""

@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fn-drupal-operator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: fn-drupal-operator
+  template:
+    metadata:
+      labels:
+        name: fn-drupal-operator
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8383"
+    spec:
+      serviceAccountName: fn-drupal-operator
+      nodeSelector:
+        function: workers
+      containers:
+        - name: fn-drupal-operator
+          # Replace this with the built image name
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          command:
+          - fn-drupal-operator
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          resources:
+            requests:
+              cpu: 100m
+              memory: 512Mi
+            limits:
+              cpu: 200m
+              memory: 700Mi
+          env:
+            - name: WATCH_NAMESPACE
+              value: "{{ .Values.watchNamespace }}"
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: OPERATOR_NAME
+              value: "fn-drupal-operator"
+            - name: USE_DYNAMIC_PROVISIONING
+              value: "{{ .Values.useDynamicProvisioning }}"

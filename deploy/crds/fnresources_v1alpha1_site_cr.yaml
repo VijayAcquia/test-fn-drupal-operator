@@ -1,0 +1,20 @@
+apiVersion: fnresources.acquia.io/v1alpha1
+kind: Site
+metadata:
+  name: wlgore-site
+  annotations:
+    fnresources.acquia.io/runJob: |
+      - ls
+      - -al
+    fnresources.acquia.io/runRootJob: |
+      - "/usr/local/bin/migrate.sh"
+spec:
+  environment: "wlgore-wil-prod"
+  domains:
+  - wilgore.fn.acquia.io
+  crons:
+  - command:
+    - drush
+    - cron
+    name: drushcron
+    schedule: '*/5 * * * *'
